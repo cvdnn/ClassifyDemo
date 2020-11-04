@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ClassifyDemo</string>
+
+    <string-array name="control_array">
+        <item>plate</item>
+        <item>lock</item>
+    </string-array>
+
+    <string-array name="sensor_array">
+        <item>weighing</item>
+        <item>capacity</item>
+        <item>temperature</item>
+    </string-array>
+</resources>
