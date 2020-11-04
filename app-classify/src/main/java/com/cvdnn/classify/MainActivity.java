@@ -65,10 +65,10 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     protected void onCreateView() {
         super.onCreateView();
 
-        binding.focusView.requestFocus();
+        binding.panelOperate.focusView.requestFocus();
 
-        onCreateSpinnerView(binding.spCtl, Args.Env.Res.getStringArray(R.array.control_array));
-        onCreateSpinnerView(binding.spSen, Args.Env.Res.getStringArray(R.array.sensor_array));
+        onCreateSpinnerView(binding.panelOperate.spCtl, Args.Env.Res.getStringArray(R.array.control_array));
+        onCreateSpinnerView(binding.panelOperate.spSen, Args.Env.Res.getStringArray(R.array.sensor_array));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
                 Outline.Hub.boards().stream().forEach((b) -> makeLogcat("[onboard]: %s: %s", b.name(), b.version().toVersion()));
 
                 runOnUiThread(() -> {
-                    onCreateSpinnerView(binding.spDox, Outline.Hub.inodes());
+                    onCreateSpinnerView(binding.panelOperate.spDox, Outline.Hub.inodes());
                 });
             } else {
                 makeLogcat("[onboard]: error, %d", Outline.Hub.inodeCount());
@@ -116,14 +116,14 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     @UiThread
     public void onOnOffClicked(View view) {
         // 获取选择的串口名称
-        String ttys = getSelectedItemText(binding.spDox);
+        String ttys = getSelectedItemText(binding.panelOperate.spDox);
         // 映射控制板实例
         ClassifyOnboard onboard = Outline.Hub.mapping(ttys);
 
         // 获取选择的垃圾桶边
         KegBox box = getKeyBox();
         // 获取控制设备名称
-        String label = getSelectedItemText(binding.spCtl);
+        String label = getSelectedItemText(binding.panelOperate.spCtl);
         // 获取控制器单元属性，已知元件情况下无需使用反射
         UnitAttribute attr = getSelectedAttribute(label, box);
 
@@ -135,14 +135,14 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     @UiThread
     public void onSensorClicked(View view) {
         // 获取选择的串口名称
-        String ttys = getSelectedItemText(binding.spDox);
+        String ttys = getSelectedItemText(binding.panelOperate.spDox);
         // 映射控制板实例
         ClassifyOnboard onboard = Outline.Hub.mapping(ttys);
 
         // 获取选择的垃圾桶边
         KegBox box = getKeyBox();
         // 获取传感器名称
-        String label = getSelectedItemText(binding.spSen);
+        String label = getSelectedItemText(binding.panelOperate.spSen);
         // 获取传感器单元属性，已知元件情况下无需使用反射
         UnitAttribute attr = getSelectedAttribute(label, box);
 
@@ -216,7 +216,7 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     };
 
     private KegBox getKeyBox() {
-        return mBoxArray.get(binding.rgBox.getCheckedRadioButtonId());
+        return mBoxArray.get(binding.panelOperate.rgBox.getCheckedRadioButtonId());
     }
 
     private UnitAttribute getSelectedAttribute(String text, KegBox box) {
@@ -245,10 +245,10 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     }
 
     public synchronized void makeLogcat(String format, Object... args) {
-        runOnUiThread(() -> binding.tvLogcatText.setText(new StringBuilder()
+        runOnUiThread(() -> binding.panelLogcat.tvLogcatText.setText(new StringBuilder()
                 .append(String.format(format, args))
                 .append("\n")
-                .append(binding.tvLogcatText.getText())
+                .append(binding.panelLogcat.tvLogcatText.getText())
                 .toString()));
     }
 }
