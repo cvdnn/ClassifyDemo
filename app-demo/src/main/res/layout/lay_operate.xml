@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:onClick="onOnOffClicked"
+            android:onClick="onControlClicked"
             android:text="ON" />
 
         <Button
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:onClick="onOnOffClicked"
+            android:onClick="onControlClicked"
             android:text="OFF" />
     </LinearLayout>
 

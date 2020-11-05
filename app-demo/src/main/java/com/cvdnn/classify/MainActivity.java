@@ -1,10 +1,11 @@
 package com.cvdnn.classify;
 
 import android.Args;
+import android.edge.classify.event.KeyEvent;
+import android.edge.classify.event.OnSerialEventMonitor;
 import android.edge.classify.onboard.ClassifyOnboard;
 import android.edge.classify.onboard.KegBox;
 import android.edge.classify.onboard.Outline;
-import android.edge.classify.onboard.event.OnSerialEventMonitor;
 import android.edge.scan.Comps;
 import android.edge.scan.OnScanListener;
 import android.edge.scan.Scanister;
@@ -30,7 +31,6 @@ import com.ztone.Loople;
 import java.util.Arrays;
 
 import iot.proto.DefiningDomain.StatusCodes;
-import iot.proto.DefiningDomain.UnitIndex;
 import iot.proto.M2spLite;
 import iot.proto.MultiMeaasgeInterface.UnitAttribute;
 import iot.proto.MultiMeaasgeInterface.UnitMeta;
@@ -39,8 +39,6 @@ import iot.proto.serical.SerialEvent;
 import static android.edge.classify.onboard.ClassifyOnboard.TEMPERATURE;
 import static android.edge.classify.onboard.KegBox.LEFT;
 import static android.edge.classify.onboard.KegBox.RIGHT;
-import static iot.proto.DefiningDomain.StatusCodes.DOWN;
-import static iot.proto.DefiningDomain.StatusCodes.UP;
 
 public class MainActivity extends FrameActivity<ActMainBinding> {
 
@@ -81,18 +79,16 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
         // 监听HID设备
         Scanister.bind(this, mScanListener);
 
-        SerialEvent.Motion
-                .subscribe(mLeftKeySerialEventSubscriber)
-                .subscribe(mRightKeySerialEventSubscriber);
+        SerialEvent.Motion.subscribe(mAllSerialEventSubscriber);
+        KeyEvent.Detector.add(mKeyListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        SerialEvent.Motion
-                .unsubscribe(mLeftKeySerialEventSubscriber)
-                .unsubscribe(mRightKeySerialEventSubscriber);
+        SerialEvent.Motion.unsubscribe(mAllSerialEventSubscriber);
+        KeyEvent.Detector.remove(mKeyListener);
 
         Outline.Hub.terminate();
     }
@@ -117,7 +113,7 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     }
 
     @UiThread
-    public void onOnOffClicked(View view) {
+    public void onControlClicked(View view) {
         // 获取选择的串口名称
         String ttys = getSelectedItemText(binding.panelOperate.spDox);
         // 映射控制板实例
@@ -163,15 +159,22 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
 
     }
 
-    @WorkerThread
-    protected final void onKeyDown(SerialInode inode, UnitMeta meta) {
-        makeLogcat("%s: %s: %s: onKeyDown", SerialInode.name(inode), getKeyBox().name(), M2spLite.index(meta).name());
-    }
+    private final KeyEvent.OnKeyListener mKeyListener = new KeyEvent.OnKeyListener() {
+        @Override
+        public void onKeyDown(SerialInode inode, KegBox box) {
+            makeLogcat("::KeyDown: %s: %s", SerialInode.name(inode), box.name());
+        }
 
-    @WorkerThread
-    protected final void onKeyUp(SerialInode inode, UnitMeta meta) {
-        makeLogcat("%s: %s: %s: onKeyUp", SerialInode.name(inode), getKeyBox().name(), M2spLite.index(meta).name());
-    }
+        @Override
+        public void onLongKeyDown(SerialInode inode, KegBox box) {
+            makeLogcat("::onLongKeyDown: %s: %s", SerialInode.name(inode), box.name());
+        }
+
+        @Override
+        public void onKeyUp(SerialInode inode, KegBox box) {
+            makeLogcat("::KeyUp: %s: %s", SerialInode.name(inode), box.name());
+        }
+    };
 
     /**
      * 扫描监听
@@ -192,29 +195,14 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
         }
     };
 
-    private final SerialEvent.Subscriber mLeftKeySerialEventSubscriber = new OnSerialEventMonitor(LEFT.key) {
-
-        @Override
-        public void onEvent(SerialInode inode, KegBox box, UnitAttribute attr, UnitMeta meta) {
-            StatusCodes status = M2spLite.valueOf(meta);
-            if (status == DOWN) {
-                onKeyDown(inode, meta);
-
-            } else if (status == UP) {
-                onKeyUp(inode, meta);
-            }
-        }
-    };
-
-    private final OnSerialEventMonitor mRightKeySerialEventSubscriber = new OnSerialEventMonitor(RIGHT.key) {
+    private final OnSerialEventMonitor mAllSerialEventSubscriber = new OnSerialEventMonitor(LEFT.plate, RIGHT.plate) {
 
         @Override
         public void onEvent(SerialInode inode, KegBox box, UnitAttribute attr, UnitMeta meta) {
             String inodeName = SerialInode.name(inode);
-            UnitIndex index = attr.getIndex();
             StatusCodes code = M2spLite.valueOf(meta);
 
-            makeLogcat("%s: %s: %s: %s", inodeName, getKeyBox().name(), index.name(), code.name());
+            makeLogcat("PLATE: %s: %s: %s", inodeName, getKeyBox().name(), code.name());
         }
     };
 
