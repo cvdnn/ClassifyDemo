@@ -12,7 +12,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app-classify" />
+            <option value="$PROJECT_DIR$/app-demo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

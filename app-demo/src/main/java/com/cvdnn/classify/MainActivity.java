@@ -1,9 +1,13 @@
 package com.cvdnn.classify;
 
+import android.Args;
 import android.edge.classify.onboard.ClassifyOnboard;
 import android.edge.classify.onboard.KegBox;
 import android.edge.classify.onboard.Outline;
-import android.frame.Args;
+import android.edge.classify.onboard.event.OnSerialEventMonitor;
+import android.edge.scan.Comps;
+import android.edge.scan.OnScanListener;
+import android.edge.scan.Scanister;
 import android.frame.context.FrameActivity;
 import android.os.Bundle;
 import android.reflect.Clazz;
@@ -37,7 +41,6 @@ import static android.edge.classify.onboard.KegBox.LEFT;
 import static android.edge.classify.onboard.KegBox.RIGHT;
 import static iot.proto.DefiningDomain.StatusCodes.DOWN;
 import static iot.proto.DefiningDomain.StatusCodes.UP;
-
 
 public class MainActivity extends FrameActivity<ActMainBinding> {
 
@@ -76,7 +79,7 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
         super.onCreate(savedInstanceState);
 
         // 监听HID设备
-//        Scanister.bind(this, mScanListener);
+        Scanister.bind(this, mScanListener);
 
         SerialEvent.Motion
                 .subscribe(mLeftKeySerialEventSubscriber)
@@ -173,26 +176,26 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
     /**
      * 扫描监听
      */
-//    private final OnScanListener mScanListener = new OnScanListener() {
-//
-//        @Override
-//        public void onScanned(Comps comps, String text) {
-//            // Comps.CARD: IC卡
-//            // Comps.XCODE：一维码，二维码
-//            // Comps.RECON：人脸识别
-//            makeLogcat("[%s]: %s", comps.name(), text);
-//        }
-//
-//        @Override
-//        public void onError(int vid, int pid) {
-//            makeLogcat("不支持该型号配件：VID：%d，PID：%d\n请核对扫描器厂家和产品型号", vid, pid);
-//        }
-//    };
-
-    private final SerialEvent.Subscriber mLeftKeySerialEventSubscriber = new SerialEvent.Subscriber(LEFT.key) {
+    private final OnScanListener mScanListener = new OnScanListener() {
 
         @Override
-        public void onEvent(SerialInode inode, UnitMeta meta) {
+        public void onScanned(Comps comps, String text) {
+            // Comps.CARD: IC卡
+            // Comps.XCODE：一维码，二维码
+            // Comps.RECON：人脸识别
+            makeLogcat("[%s]: %s", comps.name(), text);
+        }
+
+        @Override
+        public void onError(int vid, int pid) {
+            makeLogcat("不支持该型号配件：VID：%d，PID：%d\n请核对扫描器厂家和产品型号", vid, pid);
+        }
+    };
+
+    private final SerialEvent.Subscriber mLeftKeySerialEventSubscriber = new OnSerialEventMonitor(LEFT.key) {
+
+        @Override
+        public void onEvent(SerialInode inode, KegBox box, UnitAttribute attr, UnitMeta meta) {
             StatusCodes status = M2spLite.valueOf(meta);
             if (status == DOWN) {
                 onKeyDown(inode, meta);
@@ -203,15 +206,15 @@ public class MainActivity extends FrameActivity<ActMainBinding> {
         }
     };
 
-    private final SerialEvent.Subscriber mRightKeySerialEventSubscriber = new SerialEvent.Subscriber(RIGHT.key) {
+    private final OnSerialEventMonitor mRightKeySerialEventSubscriber = new OnSerialEventMonitor(RIGHT.key) {
 
         @Override
-        public void onEvent(SerialInode inode, UnitMeta meta) {
+        public void onEvent(SerialInode inode, KegBox box, UnitAttribute attr, UnitMeta meta) {
             String inodeName = SerialInode.name(inode);
-            UnitIndex attr = M2spLite.index(meta);
+            UnitIndex index = attr.getIndex();
             StatusCodes code = M2spLite.valueOf(meta);
 
-            makeLogcat("%s: %s: %s: %s", inodeName, getKeyBox().name(), attr.name(), code.name());
+            makeLogcat("%s: %s: %s: %s", inodeName, getKeyBox().name(), index.name(), code.name());
         }
     };
 
