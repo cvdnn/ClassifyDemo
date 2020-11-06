@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ClassifyDemo</string>
+    <string name="label_right_now">说明：当“关机时间”比当前时间早时，设置“立即生效”后，设备将会在30秒后休眠。</string>
 
     <string-array name="control_array">
         <item>plate</item>

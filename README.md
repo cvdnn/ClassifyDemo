@@ -41,6 +41,7 @@ allprojects {
 ```
 
 - ## 初始化控制板
+1） 设备初始化
 ```java
     /**
      * 初始化控制板
@@ -63,6 +64,18 @@ allprojects {
         });
     }
 ```
+
+2) 推出设备运行
+```java
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Outline.Hub.terminate();
+    }
+```
+
+> 设备初始化或退出设备运行，设备硬件状态均恢复到默认初始状态，即：投递门关闭，照明灯关闭等
 
 - ## 控制板连接监听
 ```java
@@ -189,4 +202,29 @@ allprojects {
             makeLogcat("PLATE: %s: %s: %s", inodeName, box.name(), code.name());
         }
     };
+```
+
+- ## `OTA`
+```java
+    @UiThread
+    public final void onOTAClicked(View v) {
+        // 获取选择的串口名称
+        String ttys = getSelectedItemText(binding.panelOperate.spDox);
+        // 映射控制板实例
+        ClassifyOnboard board = Outline.Hub.mapping(ttys);
+
+        int code = 0;
+        InputStream binInput = null;
+
+        try {
+            binInput = new BufferedInputStream(new FileInputStream(FILE_BIN_TEMP));
+            board.pushRom(code, binInput, false,
+                    (total, progress) -> makeLogcat("【%s】控制板固件正在烧录，安装进度：%.1f%%", ttys, (float) progress / total * 100));
+        } catch (Exception e) {
+            makeLogcat("ERROR: %s", e.getMessage());
+
+        } finally {
+            StreamUtils.close(binInput);
+        }
+    }
 ```
