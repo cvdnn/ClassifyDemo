@@ -70,7 +70,6 @@ public abstract class OnBoardActivity extends UIActivity {
         });
     }
 
-
     protected final KegBox getKeyBox() {
         return mBoxArray.get(binding.panelOperate.rgBox.getCheckedRadioButtonId());
     }

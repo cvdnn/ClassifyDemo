@@ -56,7 +56,10 @@ public abstract class OnEventActivity extends OnBoardActivity implements KeyEven
 
         @Override
         public void onConnected(SerialInode inode) {
+            // 注册串口事件监听
             Events.Serial.subscribe(mPlateSerialEventSubscriber);
+
+            // 注册按钮事件监听
             Events.Key.add(OnEventActivity.this);
         }
 

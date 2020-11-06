@@ -1,6 +1,21 @@
 # SDK for Classify
 
 ## 集成edge-classify
+### - root build.gradle
+```gradle
+allprojects {
+    repositories {
+        google()
+        jcenter()
+
+        maven {
+            url 'https://dl.bintray.com/cvdnn/maven'
+        }
+    }
+}
+```
+
+### - app build.gradle
 ```gradle
 dependencies {
     implementation 'com.cvdnn:android-lang:0.5.3'
@@ -15,12 +30,68 @@ dependencies {
 
 ## 初始化控制板
 ```java
-     // 初始化板载设备
-    Outline.Hub.attach(ClassifyOnboard.class).invoke();
-    // 验证控制板是否挂载成功
-    if (Outline.Hub.check()) {
-        // 遍历打印控制板版本号
-        Outline.Hub.boards().stream().forEach((b) -> makeLogcat("[onboard]: %s: %s", b.name(), b.version().toVersion()));
+    /**
+     * 初始化控制板
+     */
+    protected void onBoardInit() {
+        makeLogcat(":: START INIT BOARD ::");
+
+        Loople.Task.schedule(() -> {
+            // 初始化板载设备
+            Outline.Hub.attach(ClassifyOnboard.class).invoke();
+            // 验证控制板是否挂载成功
+            if (Outline.Hub.check()) {
+                // 遍历打印控制板版本号
+                Outline.Hub.boards().stream().forEach((b) -> makeLogcat("[onboard]: %s: %s", b.name(), b.version().toVersion()));
+
+                runOnUiThread(() -> onCreateSpinnerView(binding.panelOperate.spDox, Outline.Hub.inodes()));
+            } else {
+                makeLogcat("[onboard]: error, %d", Outline.Hub.inodeCount());
+            }
+        });
+    }
+```
+
+## 控制板连接监听
+```java
+    /**
+     * 控制板链接监听
+     */
+    protected final SerialEvent.OnSerialConnectListener mSerialConnectListener = new SerialEvent.OnSerialConnectListener() {
+
+        @Override
+        public void onConnected(SerialInode inode) {
+            // 注册串口事件监听
+            Events.Serial.subscribe(mPlateSerialEventSubscriber);
+            
+            // 注册按钮事件监听
+            Events.Key.add(OnEventActivity.this);
+        }
+
+        @Override
+        public void onDisconnected(SerialInode inode, int code, String text) {
+            makeLogcat("Disconnected: %s: %d: %s", SerialInode.name(inode), code, text);
+        }
+    };
+```
+
+## 按钮事件监听
+```java
+    @Override
+    public void onKeyDown(SerialInode inode, KegBox box) {
+        makeLogcat("KeyDown: %s: %s", SerialInode.name(inode), box.name());
+
+        if (mOptState.get() == IDLE) {
+            // 模拟垃圾投递过程
+            onBoxSchemeHandle(inode, box);
+        } else {
+            makeLogcat("DEVICE: %s", mOptState.get().name());
+        }
+    }
+
+    @Override
+    public void onKeyUp(SerialInode inode, KegBox box) {
+        makeLogcat("KeyUp: %s: %s", SerialInode.name(inode), box.name());
     }
 ```
 
@@ -31,7 +102,7 @@ dependencies {
         // 获取选择的串口名称
         String ttys = getSelectedItemText(binding.panelOperate.spDox);
         // 映射控制板实例
-        ClassifyOnboard onboard = Outline.Hub.mapping(ttys);
+        ClassifyOnboard board = Outline.Hub.mapping(ttys);
 
         // 获取选择的垃圾桶边
         KegBox box = getKeyBox();
@@ -42,7 +113,7 @@ dependencies {
 
         // 控制器设置值
         StatusCodes code = StatusCodes.valueOf(((Button) view).getText().toString());
-        onboard.set(attr, code);
+        board.set(attr, code);
     }
 ```
 
@@ -53,7 +124,7 @@ dependencies {
         // 获取选择的串口名称
         String ttys = getSelectedItemText(binding.panelOperate.spDox);
         // 映射控制板实例
-        ClassifyOnboard onboard = Outline.Hub.mapping(ttys);
+        ClassifyOnboard board = Outline.Hub.mapping(ttys);
 
         // 获取选择的垃圾桶边
         KegBox box = getKeyBox();
@@ -63,7 +134,7 @@ dependencies {
         UnitAttribute attr = getSelectedAttribute(label, box);
 
         // 获取传感器数据
-        Object obj = onboard.get(attr);
+        Object obj = board.get(attr);
         if (obj != null) {
             makeLogcat("%s: %s", label, obj.toString());
         } else {
@@ -91,17 +162,19 @@ dependencies {
     };
 ```
 
-## 监听按钮事件
+## 监听门限位器状态: LEFT.plate, RIGHT.plate
 ```java
-    private final SerialEvent.Subscriber mRightKeySerialEventSubscriber = new SerialEvent.Subscriber() {
+    /**
+     * 监听门限位器状态
+     */
+    protected final OnSerialEventMonitor mPlateSerialEventSubscriber = new OnSerialEventMonitor(LEFT.plate, RIGHT.plate) {
 
         @Override
-        public void onEvent(SerialInode inode, UnitAttribute attr, UnitMeta meta) {
+        public void onEvent(SerialInode inode, KegBox box, MultiMeaasgeInterface.UnitAttribute attr, MultiMeaasgeInterface.UnitMeta meta) {
             String inodeName = SerialInode.name(inode);
-            UnitIndex attr = M2spLite.index(meta);
-            StatusCodes code = M2spLite.valueOf(meta);
+            DefiningDomain.StatusCodes code = M2spLite.valueOf(meta);
 
-            makeLogcat("%s: %s: %s: %s", inodeName, getKeyBox().name(), attr.name(), code.name());
+            makeLogcat("PLATE: %s: %s: %s", inodeName, box.name(), code.name());
         }
     };
 ```
