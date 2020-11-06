@@ -1,6 +1,7 @@
 # SDK for Classify
 
 0. ## 集成edge-classify
+
 - ### root build.gradle
 ```gradle
 allprojects {
@@ -29,6 +30,7 @@ dependencies {
 ```
 
 0. ## 初始化控制板
+
 ```java
     /**
      * 初始化控制板
