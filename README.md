@@ -204,27 +204,38 @@ allprojects {
     };
 ```
 
-- ## `OTA`
+- ## 固件更新
 ```java
     @UiThread
     public final void onOTAClicked(View v) {
-        // 获取选择的串口名称
-        String ttys = getSelectedItemText(binding.panelOperate.spDox);
-        // 映射控制板实例
-        ClassifyOnboard board = Outline.Hub.mapping(ttys);
+        Loople.Task.schedule(() -> {
+            // 获取选择的串口名称
+            String ttys = getSelectedItemText(binding.panelOperate.spDox);
+            // 映射控制板实例
+            ClassifyOnboard board = Outline.Hub.mapping(ttys);
 
-        int code = 0;
-        InputStream binInput = null;
+            Semver boardSemver = board.version();
+            Semver updateSemver = new Semver().parse(FILE_BIN_TEMP);
 
-        try {
-            binInput = new BufferedInputStream(new FileInputStream(FILE_BIN_TEMP));
-            board.pushRom(code, binInput, false,
-                    (total, progress) -> makeLogcat("【%s】控制板固件正在烧录，安装进度：%.1f%%", ttys, (float) progress / total * 100));
-        } catch (Exception e) {
-            makeLogcat("ERROR: %s", e.getMessage());
+            // FIXME 必须对固件版本进行类型和版本号比对，避免刷错固件造成设备无法运行
+            if (Semver.valid(boardSemver, updateSemver) && updateSemver.newness(boardSemver)) {
+                InputStream binInput = null;
 
-        } finally {
-            StreamUtils.close(binInput);
-        }
+                try {
+                    binInput = new BufferedInputStream(new FileInputStream(FILE_BIN_TEMP));
+                    board.pushRom(updateSemver.code, binInput, false,
+                            (total, progress) -> makeLogcat("【%s】控制板固件正在烧录，安装进度：%.1f%%", ttys, (float) progress / total * 100));
+                } catch (Exception e) {
+                    makeLogcat("ERROR: %s", e.getMessage());
+
+                } finally {
+                    StreamUtils.close(binInput);
+                }
+            } else {
+                makeLogcat("固件版本已是最新版本");
+            }
+        });
     }
 ```
+
+> 执行OTA前需校验控制板 `型号` 和 `版本号` ，以免刷机失败或控制板无法使用
