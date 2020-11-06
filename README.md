@@ -1,7 +1,7 @@
 # SDK for Classify
 
 ## 集成edge-classify
-### - root build.gradle
+- ### root build.gradle
 ```gradle
 allprojects {
     repositories {
@@ -15,7 +15,7 @@ allprojects {
 }
 ```
 
-### - app build.gradle
+- ### app build.gradle
 ```gradle
 dependencies {
     implementation 'com.cvdnn:android-lang:0.5.3'
