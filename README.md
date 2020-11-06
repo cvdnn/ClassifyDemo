@@ -17,15 +17,27 @@ allprojects {
 
 2) ### app build.gradle
 ```gradle
-dependencies {
-    implementation 'com.cvdnn:android-lang:0.5.3'
-    implementation 'com.cvdnn:android-loople:0.1.4'
-    implementation 'com.cvdnn:android-frame:0.1.3'
-    implementation 'com.cvdnn:serial-port:0.3.6'
-    implementation 'com.cvdnn:edge-m2sp:0.7.5'
-    implementation 'com.cvdnn:edge-scan:0.3.3'
-    implementation 'com.cvdnn:edge-classify:0.16.5'
-}
+    // defaultConfig
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 28
+    }
+
+    // dependencies
+    dependencies {
+        implementation 'com.cvdnn:android-lang:0.5.3'
+        implementation 'com.cvdnn:android-loople:0.1.4'
+        implementation 'com.cvdnn:android-frame:0.1.3'
+        implementation 'com.cvdnn:serial-port:0.3.6'
+        implementation 'com.cvdnn:edge-m2sp:0.7.5'
+        implementation 'com.cvdnn:edge-scan:0.3.3'
+        implementation 'com.cvdnn:edge-classify:0.16.5'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 ```
 
 - ## 初始化控制板

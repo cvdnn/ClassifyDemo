@@ -4,7 +4,6 @@ def buildVersion() {
 
 ext {
     app = [compileSdkVersion: 28,
-           applicationId    : "com.ztone.rule",
            minSdkVersion    : 24,
            targetSdkVersion : 28,
            versionCode      : buildVersion(),
