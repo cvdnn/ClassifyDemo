@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
 
@@ -16,9 +16,17 @@
             android:focusable="true"
             android:focusableInTouchMode="true" />
 
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="SERIAL: "
+            android:textColor="@android:color/black"
+            android:textSize="16dp" />
+
         <Spinner
             android:id="@+id/sp_dox"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:minWidth="80dp"
             android:paddingLeft="10dp"
@@ -29,7 +37,7 @@
             android:id="@+id/rg_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
@@ -49,17 +57,6 @@
                 android:text="RIGHT" />
         </RadioGroup>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0px"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btn_timing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onTimingSwitchClicked"
-            android:text="定时设置" />
     </LinearLayout>
 
     <LinearLayout
@@ -68,15 +65,16 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:text="CONTROL: "
             android:textColor="@android:color/black"
             android:textSize="16dp" />
 
         <Spinner
             android:id="@+id/sp_ctl"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:minWidth="80dp"
             android:paddingLeft="10dp"
@@ -87,7 +85,7 @@
             android:id="@+id/btn_on"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:onClick="onControlClicked"
             android:text="ON" />
 
@@ -95,7 +93,7 @@
             android:id="@+id/btn_off"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:onClick="onControlClicked"
             android:text="OFF" />
     </LinearLayout>
@@ -106,15 +104,16 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:text="SENSOR: "
             android:textColor="@android:color/black"
             android:textSize="16dp" />
 
         <Spinner
             android:id="@+id/sp_sen"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:minWidth="80dp"
             android:paddingLeft="10dp"
@@ -125,9 +124,31 @@
             android:id="@+id/btn_getting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:onClick="onSensorClicked"
             android:text="DATA" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="220dp">
+
+        <Button
+            android:id="@+id/btn_classify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClassifyClicked"
+            android:text="CLASSIFY" />
+
+        <Button
+            android:id="@+id/btn_timing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:onClick="onTimingSwitchClicked"
+            android:text="TIMING" />
+    </LinearLayout>
+
 </LinearLayout>

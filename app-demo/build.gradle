@@ -39,12 +39,12 @@ dependencies {
         implementation project(':edge-scan')
         implementation project(':edge-classify')
     } else {
-        println '== APP CLASSIFY DEMO =='
+        println '== CLASSIFY APP DEMO =='
 
         implementation 'com.cvdnn:serial-port:0.3.6'
-        implementation 'com.cvdnn:edge-m2sp:0.7.7'
+        implementation 'com.cvdnn:edge-m2sp:0.7.8'
         implementation 'com.cvdnn:edge-scan:0.3.3'
-        implementation 'com.cvdnn:edge-classify:0.16.8'
+        implementation 'com.cvdnn:edge-classify:0.16.9'
     }
 
     implementation 'com.cvdnn:android-lang:0.5.12'
