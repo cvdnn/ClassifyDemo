@@ -1,7 +1,6 @@
 # SDK for Classify
 
-0. ## 集成edge-classify
-
+## 集成edge-classify
 - ### root build.gradle
 ```gradle
 allprojects {
@@ -29,8 +28,7 @@ dependencies {
 }
 ```
 
-0. ## 初始化控制板
-
+## 初始化控制板
 ```java
     /**
      * 初始化控制板
@@ -54,7 +52,7 @@ dependencies {
     }
 ```
 
-0. ## 控制板连接监听
+## 控制板连接监听
 ```java
     /**
      * 控制板链接监听
@@ -77,7 +75,7 @@ dependencies {
     };
 ```
 
-0. ## 按钮事件监听
+## 按钮事件监听
 ```java
     @Override
     public void onKeyDown(SerialInode inode, KegBox box) {
@@ -97,7 +95,7 @@ dependencies {
     }
 ```
 
-0. ## 下发控制信号
+## 下发控制信号
 ```java
     @UiThread
     public void onControlClicked(View view) {
@@ -119,7 +117,7 @@ dependencies {
     }
 ```
 
-0. ## 获取传感器数据
+## 获取传感器数据
 ```java
     @UiThread
     public void onSensorClicked(View view) {
@@ -145,7 +143,7 @@ dependencies {
     }
 ```
 
-0. ## 监听IC卡/二维码
+## 监听IC卡/二维码
 ```java
     private final OnScanListener mScanListener = new OnScanListener() {
 
@@ -164,7 +162,7 @@ dependencies {
     };
 ```
 
-0. ## 监听门限位器状态: LEFT.plate, RIGHT.plate
+## 监听门限位器状态: LEFT.plate, RIGHT.plate
 ```java
     /**
      * 监听门限位器状态
