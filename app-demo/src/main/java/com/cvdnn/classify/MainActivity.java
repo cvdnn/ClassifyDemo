@@ -1,6 +1,7 @@
 package com.cvdnn.classify;
 
 import android.Args;
+import android.Loople;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.assist.Assert;
@@ -19,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.cvdnn.classify.databinding.DlgTimingBinding;
-import com.ztone.Loople;
 
 import java.io.BufferedInputStream;
 import java.io.File;

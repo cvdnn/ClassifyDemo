@@ -1,5 +1,6 @@
 package com.cvdnn.classify;
 
+import android.Loople;
 import android.edge.classify.onboard.ClassifyOnboard;
 import android.edge.classify.onboard.KegBox;
 import android.edge.classify.onboard.Outline;
@@ -9,8 +10,6 @@ import android.util.ArrayMap;
 import android.util.SparseArray;
 
 import androidx.annotation.Nullable;
-
-import com.ztone.Loople;
 
 import iot.proto.MultiMeaasgeInterface.UnitAttribute;
 

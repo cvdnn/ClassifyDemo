@@ -1,5 +1,6 @@
 package com.cvdnn.classify;
 
+import android.Loople;
 import android.concurrent.Threads;
 import android.edge.classify.onboard.ClassifyOnboard;
 import android.edge.classify.onboard.KegBox;
@@ -8,8 +9,6 @@ import android.edge.classify.onboard.Outline;
 import android.serialport.api.SerialInode;
 
 import androidx.annotation.WorkerThread;
-
-import com.ztone.Loople;
 
 import java.util.concurrent.atomic.AtomicReference;
 
