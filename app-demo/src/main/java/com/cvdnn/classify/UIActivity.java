@@ -11,6 +11,9 @@ import com.cvdnn.classify.databinding.ActMainBinding;
 
 import java.util.Arrays;
 
+/**
+ * 界面
+ */
 public abstract class UIActivity extends FrameActivity<ActMainBinding> {
 
     @Override

@@ -21,6 +21,9 @@ import iot.proto.serical.SerialEvent;
 import static android.edge.classify.onboard.KegBox.LEFT;
 import static android.edge.classify.onboard.KegBox.RIGHT;
 
+/**
+ * 控制板事件订阅
+ */
 public abstract class OnEventActivity extends OnBoardActivity implements KeyEvent.OnKeyListener {
 
     @Override
