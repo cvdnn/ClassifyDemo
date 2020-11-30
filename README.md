@@ -28,10 +28,10 @@ allprojects {
         implementation 'com.cvdnn:android-lang:0.5.35'
         implementation 'com.cvdnn:android-frame:0.1.3'
 
-        implementation 'com.cvdnn:serial-port:0.3.6'
-        implementation 'com.cvdnn:edge-m2sp:0.7.11'
-        implementation 'com.cvdnn:edge-scan:0.3.3'
-        implementation 'com.cvdnn:edge-classify:0.16.19'
+        implementation 'com.cvdnn:serial-port:0.3.8'
+        implementation 'com.cvdnn:edge-m2sp:0.7.15'
+        implementation 'com.cvdnn:edge-scan:0.3.5'
+        implementation 'com.cvdnn:edge-classify:0.16.25'
     }
 
     compileOptions {
@@ -239,3 +239,39 @@ allprojects {
 ```
 
 > 执行OTA前需校验控制板 `型号` 和 `版本号` ，以免刷机失败或控制板无法使用
+
+- ## 混淆规则
+```proguard
+# edge classify
+-dontwarn android.edge.**
+-keep public class android.edge.** { *; }
+-keepclassmembers class android.edge.** { *; }
+-keep public class android.edge.classify.onboard.Onboard$* { *; }
+-keep public class * extends android.edge.classify.onboard.Onboard {
+    public <init>(android.edge.classify.onboard.Onboard$Wrap);
+}
+-keep public class * extends android.edge.classify.event.OnSerialEventMonitor {
+    <init>(iot.proto.MultiMeaasgeInterface.UnitAttribute[]);
+}
+
+-dontwarn com.ys.**
+-keep public class com.ys.** { *; }
+
+-dontwarn startest.ys.com.poweronoff.**
+-keep public class startest.ys.com.poweronoff.** { *; }
+
+# edge m2sp
+-dontwarn iot.proto.**
+-keep class iot.proto.serical.SerialPortKernel { *; }
+-keep public class iot.proto.** { *; }
+
+# edge serical
+-dontwarn android.serialport.**
+-keep class android.serialport.** { *; }
+-keepclassmembernames class android.serialport.api.SerialPort { *; }
+
+# edge scan
+-dontwarn android.edge.scan.**
+-keep public class android.edge.scan.** { *; }
+
+```

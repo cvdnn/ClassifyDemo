@@ -8,7 +8,7 @@ android {
         minSdkVersion app.minSdkVersion
         targetSdkVersion app.targetSdkVersion
         versionCode app.versionCode
-        versionName "0.1.10"
+        versionName "0.1.11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,10 +44,10 @@ dependencies {
     } else {
         println '== CLASSIFY APP DEMO =='
 
-        implementation 'com.cvdnn:serial-port:0.3.6'
-        implementation 'com.cvdnn:edge-m2sp:0.7.11'
-        implementation 'com.cvdnn:edge-scan:0.3.3'
-        implementation 'com.cvdnn:edge-classify:0.16.19'
+        implementation 'com.cvdnn:serial-port:0.3.8'
+        implementation 'com.cvdnn:edge-m2sp:0.7.15'
+        implementation 'com.cvdnn:edge-scan:0.3.5'
+        implementation 'com.cvdnn:edge-classify:0.16.25'
 
         implementation 'com.cvdnn:android-lang:0.5.35'
     }
