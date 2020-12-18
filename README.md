@@ -65,7 +65,7 @@ allprojects {
     }
 ```
 
-2) 推出设备运行
+2) 退出设备运行
 ```java
     @Override
     protected void onDestroy() {

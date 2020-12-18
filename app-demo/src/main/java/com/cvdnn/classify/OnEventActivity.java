@@ -13,9 +13,10 @@ import android.serialport.api.SerialInode;
 
 import androidx.annotation.Nullable;
 
-import iot.proto.DefiningDomain;
+import iot.proto.DefiningDomain.StatusCodes;
 import iot.proto.M2spLite;
-import iot.proto.MultiMeaasgeInterface;
+import iot.proto.MultiMeaasgeInterface.UnitAttribute;
+import iot.proto.MultiMeaasgeInterface.UnitMeta;
 import iot.proto.serical.SerialEvent;
 
 import static android.edge.classify.onboard.KegBox.LEFT;
@@ -78,11 +79,25 @@ public abstract class OnEventActivity extends OnBoardActivity implements KeyEven
     protected final OnSerialEventMonitor mPlateSerialEventSubscriber = new OnSerialEventMonitor(LEFT.plate, RIGHT.plate) {
 
         @Override
-        public void onEvent(SerialInode inode, KegBox box, MultiMeaasgeInterface.UnitAttribute attr, MultiMeaasgeInterface.UnitMeta meta) {
+        public void onEvent(SerialInode inode, KegBox box, UnitAttribute attr, UnitMeta meta) {
             String inodeName = SerialInode.name(inode);
-            DefiningDomain.StatusCodes code = M2spLite.valueOf(meta);
+            StatusCodes code = M2spLite.valueOf(meta);
 
             makeLogcat("PLATE: %s: %s: %s", inodeName, box.name(), code.name());
+        }
+    };
+
+    /**
+     * 监听满溢传感器
+     */
+    protected final OnSerialEventMonitor mCapacitySerialEventSubscriber = new OnSerialEventMonitor(LEFT.capacity, RIGHT.capacity) {
+
+        @Override
+        public void onEvent(SerialInode inode, KegBox box, UnitAttribute attr, UnitMeta meta) {
+            String inodeName = SerialInode.name(inode);
+            long code = M2spLite.valueOf(meta);
+
+            makeLogcat("CAPACITY: %s: %s: %d", inodeName, box.name(), code);
         }
     };
 

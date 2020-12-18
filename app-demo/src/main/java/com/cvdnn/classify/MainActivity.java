@@ -99,7 +99,7 @@ public class MainActivity extends OnDroppingActivity {
         KegBox box = getKeyBox();
 
         // 模拟垃圾投递过程
-        onBoxSchemeHandle(inode, box);
+        Loople.Task.schedule(() -> onBoxSchemeHandle(inode, box));
     }
 
     @UiThread
