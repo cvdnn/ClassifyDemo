@@ -20,11 +20,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.cvdnn.classify.databinding.DlgTimingBinding;
+import com.cvdnn.classify.model.WeightEntity;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Vector;
 
 import iot.proto.DefiningDomain.StatusCodes;
 import iot.proto.MultiMeaasgeInterface.UnitAttribute;
@@ -37,6 +41,9 @@ import static android.edge.classify.Timing.TAG_TIMING_WINTER_LIGHT;
 import static android.edge.classify.Timing.TIMING_POWER_OFF;
 import static android.edge.classify.Timing.TIMING_POWER_ON;
 import static android.edge.classify.Timing.WINTER_TIMING_LIGHT;
+import static android.edge.classify.onboard.ClassifyOnboard.VALUE_BLUR;
+import static android.edge.classify.onboard.ClassifyOnboard.WEIGHING_LEFT;
+import static android.edge.classify.onboard.ClassifyOnboard.WEIGHING_RIGHT;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -46,6 +53,8 @@ public class MainActivity extends OnDroppingActivity {
     private static final int DELAY_SHUTDOWN_MILLIS = 3000;
 
     private Dialog mTimeSwitchDialog;
+
+    private final ArrayList<WeightEntity> mLastWeightArray = new ArrayList<>();
 
     @UiThread
     public final void onControlClicked(View view) {
@@ -152,6 +161,60 @@ public class MainActivity extends OnDroppingActivity {
             } else {
                 makeLogcat("固件版本已是最新版本");
             }
+        });
+    }
+
+    @UiThread
+    private final void onPrepareWeight(View v) {
+        Loople.Task.schedule(() -> {
+            Vector<Runnable> runnables = new Vector<>();
+            Outline.Hub.boards().forEach(board -> {
+                ClassifyOnboard cfy = ((ClassifyOnboard) board);
+
+                runnables.add(() -> {
+                    long w = cfy.getWeighing(WEIGHING_LEFT);
+                    if (w != VALUE_BLUR) {
+                        mLastWeightArray.add(new WeightEntity(cfy, WEIGHING_LEFT, w));
+                    }
+                });
+
+                runnables.add(() -> {
+                    long w = cfy.getWeighing(WEIGHING_RIGHT);
+                    if (w != VALUE_BLUR) {
+                        mLastWeightArray.add(new WeightEntity(cfy, WEIGHING_RIGHT, w));
+                    }
+                });
+            });
+
+            Loople.Task.allOf(runnables);
+
+            makeLogcat("开始称重试验，请投递标称物");
+        });
+    }
+
+    @UiThread
+    private final void onInvokeWeight(View v) {
+        Loople.Task.schedule(() -> {
+            Vector<Runnable> runnables = new Vector<>();
+            mLastWeightArray.forEach(entity -> runnables.add(() -> entity.endWeight = entity.board.getWeighing(entity.attr)));
+            Loople.Task.allOf(runnables);
+
+            StringBuilder text = new StringBuilder();
+            mLastWeightArray.forEach(entity -> {
+                long weighting = entity.endWeight - entity.lastWeight;
+                if (entity.endWeight != VALUE_BLUR && weighting > 0) {
+                    text.append(String.format(Locale.getDefault(), "[%s]: %d克\n", entity.board.tag(entity.attr), weighting));
+                }
+            });
+
+            String hintText = text.toString();
+            if (Assert.notEmpty(hintText)) {
+                makeLogcat(hintText);
+            } else {
+                makeLogcat("本次尚未投递标称物");
+            }
+
+            mLastWeightArray.clear();
         });
     }
 

@@ -159,4 +159,26 @@
             android:text="OTA" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="220dp">
+
+        <Button
+            android:id="@+id/btn_prepare_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onPrepareWeight"
+            android:text="PREPARE" />
+
+        <Button
+            android:id="@+id/btn_invoke_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:onClick="onInvokeWeight"
+            android:text="WEIGHTING" />
+
+    </LinearLayout>
+
 </LinearLayout>
