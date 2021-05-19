@@ -63,21 +63,21 @@ public abstract class OnDroppingActivity extends OnEventActivity {
 
             // 装载board对象
             ClassifyOnboard board = Outline.Hub.mapping(inode);
-            if (board != null && board.isBind()) {
+            if (board != null && board.valid()) {
                 // 计重
                 final long baseWeight = board.getWeighing(box.weighing);
 
                 makeLogcat("垃圾分类舱门开启中，请耐心等待");
-                boolean result = board.Pend.waitingPlateChangeStatus(box.plate, ON);
+                boolean result = false;//board.Pend.waitingPlateChangeStatus(box.plate, ON);
                 if (result) {
 
                     // 等待投递垃圾，示例5s超时
-                    StatusCodes status = board.Pend.handleWaitDropping(box, 5, mMotionDroppingListener);
+                    StatusCodes status = null;//board.Pend.handleWaitDropping(box, 5, mMotionDroppingListener);
                     if (status == TERMINATE) {
                         // 投放物件结束关闭舱门，等待舱门关闭成功，超时10秒
                         makeLogcat("垃圾分类舱门即将关闭，请将手移开投递门");
 
-                        result = board.Pend.waitingPlateChangeStatus(box.plate, OFF);
+//                        result = board.Pend.waitingPlateChangeStatus(box.plate, OFF);
                         if (result) {
                             // 需要称重
                             if (baseWeight != VALUE_BLUR) {
@@ -105,7 +105,7 @@ public abstract class OnDroppingActivity extends OnEventActivity {
                     }
                 }
 
-                board.Pend.onRemovePlateEvent();
+//                board.Pend.onRemovePlateEvent();
 
                 if (result) {
                     // 满溢检测

@@ -25,8 +25,10 @@ allprojects {
         google()
         jcenter()
 
+        mavenLocal()
+
         maven {
-            url 'https://dl.bintray.com/cvdnn/maven'
+            url 'https://gitee.com/cvdnn/nexus/raw/maven'
         }
     }
 }
